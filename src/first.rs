@@ -15,7 +15,6 @@ struct Node {
 }
 
 impl List {
-    // TODO, make code happen
     pub fn new() -> Self {
         List { head: Link::Empty }
     }
