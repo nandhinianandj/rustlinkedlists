@@ -12,15 +12,15 @@ struct Node<T> {
 
 pub struct IntoIter<T>(List<T>);
 
-pub struct Iter<T> {
-    next: Option<&Node<T>>,
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
 }
-impl<T> List<T> {
+impl<'a, T> List<T> {
     pub fn new() -> Self {
         List { head: None }
     }
-    pub fn iter(&self) -> Iter<T> {
-        Iter {next: self.head.map(|node| &node) }
+    pub fn iter(&'a self) -> Iter<'a, T> {
+        Iter {next: self.head.map(|node| &'a node) }
     }
     pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
@@ -69,12 +69,12 @@ impl<T> Iterator for IntoIter<T> {
         self.0.pop()
     }
 }
-impl<T> Iterator for Iter<T> {
+impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &T;
-    fn next(&mut self) -> Option<Self::Item> {
+    fn next(&'a mut self) -> Option<Self::Item> {
         self.next.map(|node| {
-            self.next = node.next.map(|node| &node);
-            &node.elem
+            self.next = node.next.map(|node| &'a node);
+            &'a node.elem
         })
     }
 }
